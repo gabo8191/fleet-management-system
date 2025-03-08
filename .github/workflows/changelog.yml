@@ -1,0 +1,77 @@
+name: Generate Changelog
+
+on:
+  workflow_run:
+    workflows: ["Release Versioning"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.CHANGELOG_TOKEN }}
+          ref: main
+
+      - name: Fetch all tags
+        run: git fetch origin +refs/tags/*:refs/tags/* --force
+
+      - name: Get Latest Tag
+        id: latest-tag
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          echo "Latest tag found: $LATEST_TAG"
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+
+      - name: Generate CHANGELOG.md
+        uses: orhun/git-cliff-action@v2
+        with:
+          config: cliff.toml
+          args: --output CHANGELOG.md
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          git status CHANGELOG.md
+          if [[ -n "$(git status --porcelain CHANGELOG.md)" ]]; then
+            echo "Cambios detectados en CHANGELOG.md"
+            echo "HAS_CHANGES=true" >> $GITHUB_OUTPUT
+          else
+            echo "No se detectaron cambios en CHANGELOG.md"
+            echo "HAS_CHANGES=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        id: create-pull-request
+        if: steps.check-changes.outputs.HAS_CHANGES == 'true'
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.CHANGELOG_TOKEN }}
+          commit-message: "docs: Actualizar CHANGELOG.md"
+          title: "📚 Actualización de Changelog"
+          body: |
+            Actualización automática del archivo CHANGELOG.md
+            - Generado con git-cliff
+            - Versión: ${{ env.LATEST_TAG }}
+          branch: update-changelog-${{ github.run_id }}
+          base: main
+          delete-branch: true
+          labels: documentation,automated
+
+      - name: Enable Auto-merge
+        if: steps.check-changes.outputs.HAS_CHANGES == 'true' && steps.create-pull-request.outputs.pull-request-number != ''
+        run: |
+          PR_NUMBER="${{ steps.create-pull-request.outputs.pull-request-number }}"
+          echo "Activando auto-merge para PR #$PR_NUMBER"
+          gh pr merge --auto --merge "$PR_NUMBER"
+        env:
+          GH_TOKEN: ${{ secrets.CHANGELOG_TOKEN }}
