@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments :: head('Registro')}"></head>
+
+<body class="background-gradient">
+<div th:replace="~{fragments/fragments :: header}"></div>
+
+<div class="container">
+    <div class="auth-card bg-white">
+        <h2 class="text-center mb-4">Registro de Usuario</h2>
+
+        <form th:action="@{/register}" th:object="${user}" method="post">
+            <div class="mb-3">
+                <label for="username" class="form-label">Usuario</label>
+                <input type="text" class="form-control" id="username"
+                       th:field="*{username}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('username')}"
+                     th:errors="*{username}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password"
+                       th:field="*{password}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('password')}"
+                     th:errors="*{password}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+                <input type="password" class="form-control" id="confirmPassword"
+                       name="confirmPassword" required>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Registrarse</button>
+                <a th:href="@{/login}" class="btn btn-link text-center">¿Ya tienes cuenta? Inicia Sesión</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="~{fragments/fragments :: footer}"></div>
+<div th:replace="~{fragments/fragments :: scripts}"></div>
+</body>
+</html>
