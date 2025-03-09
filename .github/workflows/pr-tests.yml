@@ -25,5 +25,12 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Run Unit Tests
-        run: mvn test -B
+      - name: Run Unit Tests with more info
+        run: mvn test -B -Dspring.profiles.active=test -X
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: target/surefire-reports/
