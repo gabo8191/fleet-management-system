@@ -1,16 +1,21 @@
-name: Continuous Integration
-
+name: Spring Boot CI/CD
 on:
+  pull_request:
+    branches:
+      - main
+      - develop
+      - feature/**
+      - release/**
+      - hotfix/**
   push:
     branches:
       - develop
       - main
 
 jobs:
-  build-and-test:
+  test:
     name: Build and Test
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -18,15 +23,24 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: 17
-          distribution: temurin
-          cache: maven
-      - name: Check file encoding
-        run: |
-            file -i src/main/resources/application.properties
-            cat src/main/resources/application.properties | hexdump -C | head
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
 
-      - name: Build and Run Tests
+      # Run on all events
+      - name: Basic Unit Tests
+        if: github.event_name == 'pull_request'
+        run: mvn test -B
+
+      # Extended checks only on pushes to main branches
+      - name: Check file encoding
+        if: github.event_name == 'push'
+        run: |
+          file -i src/main/resources/application.properties
+          cat src/main/resources/application.properties | hexdump -C | head
+
+      - name: Full Build and Verification
+        if: github.event_name == 'push'
         run: |
           export LANG=en_US.UTF-8
           export LC_ALL=en_US.UTF-8
