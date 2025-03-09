@@ -1,4 +1,4 @@
-name: PR Tests
+name: Spring Boot PR Validation
 
 on:
   pull_request:
@@ -10,8 +10,8 @@ on:
       - hotfix/**
 
 jobs:
-  test:
-    name: Run Tests on PR
+  validate:
+    name: Validate and Test
     runs-on: ubuntu-latest
     
     steps:
@@ -24,13 +24,30 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
+      
+      - name: Verify code formatting
+        run: mvn spotless:check
+        continue-on-error: true
+      
+      - name: Run static code analysis
+        run: mvn pmd:check
+        continue-on-error: true
+          
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
           
       - name: Run Unit Tests
-        run: mvn test -B -Dspring.profiles.active=test -X
+        run: mvn test -B -Dspring.profiles.active=test
+      
+      - name: Generate test reports
+        if: always()
+        run: mvn surefire-report:report-only
         
       - name: Upload test reports
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-reports
-          path: target/surefire-reports/
+          path: |
+            target/surefire-reports/
+            target/site/
