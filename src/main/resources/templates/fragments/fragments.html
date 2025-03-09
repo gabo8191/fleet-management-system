@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title}">Título</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .auth-card {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .background-gradient {
+            background: linear-gradient(120deg, #7f7fd5, #86a8e7, #91eae4);
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+<!-- Fragmento header -->
+<div th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}">Gestión de Flota</a>
+        </div>
+    </nav>
+</div>
+
+<!-- Fragmento footer -->
+<div th:fragment="footer">
+    <footer class="bg-dark text-white mt-5">
+        <div class="container py-4">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2024 Gestión de Flota. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- Fragmento scripts -->
+<div th:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+</body>
+</html>
