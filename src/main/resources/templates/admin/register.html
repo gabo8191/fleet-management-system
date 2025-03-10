@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/fragments :: head('Registro')}"></head>
+<head th:replace="~{fragments/fragments :: head('Registro de Usuario')}"></head>
 
 <body class="background-gradient">
 <div th:replace="~{fragments/fragments :: header}"></div>
 
 <div class="container">
     <div class="auth-card bg-white">
-        <h2 class="text-center mb-4">Registro de Usuario</h2>
+        <h2 class="text-center mb-4">Creación de Usuario</h2>
 
         <form th:action="@{/register}" th:object="${user}" method="post">
             <div class="mb-3">
@@ -32,9 +32,20 @@
                        name="confirmPassword" required>
             </div>
 
+            <div class="mb-3">
+                <label for="roleId" class="form-label">Rol del Usuario</label>
+                <select class="form-select" id="roleId" name="roleId" required>
+                    <option value="">Seleccionar rol</option>
+                    <option th:each="role : ${roles}"
+                            th:value="${role.id}"
+                            th:text="${role.name.replace('ROLE_', '')}">
+                    </option>
+                </select>
+            </div>
+
             <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Registrarse</button>
-                <a th:href="@{/login}" class="btn btn-link text-center">¿Ya tienes cuenta? Inicia Sesión</a>
+                <button type="submit" class="btn btn-primary">Crear Usuario</button>
+                <a th:href="@{/admin/users}" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>
     </div>
