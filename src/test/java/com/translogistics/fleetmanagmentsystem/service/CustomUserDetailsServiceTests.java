@@ -36,6 +36,7 @@ public class CustomUserDetailsServiceTests {
         testUser = new User();
         testUser.setUsername("testuser");
         testUser.setPassword("encodedPassword");
+        testUser.setEnabled(true); // Nuevo campo añadido
 
         Role role = new Role();
         role.setName("ROLE_DRIVER");
@@ -51,21 +52,36 @@ public class CustomUserDetailsServiceTests {
         assertNotNull(userDetails);
         assertEquals("testuser", userDetails.getUsername());
         assertEquals("encodedPassword", userDetails.getPassword());
+        assertTrue(userDetails.isEnabled());
+        assertTrue(userDetails.isAccountNonExpired());
+        assertTrue(userDetails.isAccountNonLocked());
+        assertTrue(userDetails.isCredentialsNonExpired());
 
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         assertNotNull(authorities);
-        assertFalse(authorities.isEmpty());
+        assertEquals(1, authorities.size());
         assertTrue(authorities.contains(new SimpleGrantedAuthority("ROLE_DRIVER")));
     }
 
     @Test
     void loadUserByUsernameShouldThrowExceptionWhenUserDoesNotExist() {
-        when(userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
+        String username = "nonexistent";
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(UsernameNotFoundException.class, () ->
-                userDetailsService.loadUserByUsername("nonexistent")
+                userDetailsService.loadUserByUsername(username)
         );
 
-        assertEquals("Usuario no encontrado", exception.getMessage());
+        assertEquals("Usuario no encontrado: " + username, exception.getMessage());
+    }
+
+    @Test
+    void loadUserByUsernameShouldHandleDisabledUser() {
+        testUser.setEnabled(false); // Usuario deshabilitado
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername("testuser");
+
+        assertFalse(userDetails.isEnabled());
     }
 }
