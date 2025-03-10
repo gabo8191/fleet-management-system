@@ -37,6 +37,4 @@ public class Driver extends BaseEntity{
     private List<Vehicle> vehicles;
 
 
-
-
 }
