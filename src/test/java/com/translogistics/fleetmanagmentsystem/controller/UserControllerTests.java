@@ -83,7 +83,7 @@ public class UserControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attributeExists("roles"))
-                .andExpect(view().name("auth/register"));
+                .andExpect(view().name("admin/register"));
 
         verify(userService, times(1)).findAllRoles();
     }
@@ -100,7 +100,7 @@ public class UserControllerTests {
 
         String viewName = userController.register(userDto, bindingResult, roleId, model);
 
-        assertEquals("auth/register", viewName);
+        assertEquals("admin/register", viewName);
         verify(userService, never()).createUser(any(UserDto.class), anyLong());
         verify(model, times(1)).addAttribute(eq("roles"), anyList());
     }
@@ -118,7 +118,7 @@ public class UserControllerTests {
 
         String viewName = userController.register(userDto, bindingResult, roleId, model);
 
-        assertEquals("auth/register", viewName);
+        assertEquals("admin/register", viewName);
         verify(userService, never()).createUser(any(UserDto.class), anyLong());
         verify(bindingResult, times(1)).rejectValue(eq("username"), eq("error.user"), anyString());
         verify(model, times(1)).addAttribute(eq("roles"), anyList());
