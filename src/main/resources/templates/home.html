@@ -1,12 +1,62 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Fleet Management System</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-<h1>Bienvenido al Sistema de Gestión de Flota</h1>
-<p>Esta es la página de inicio de la aplicación.</p>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/fragments :: head('Inicio')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+<div th:replace="~{fragments/fragments :: ${#authorization.expression('hasRole(''ADMIN'')') ? 'admin-header' : 'general-header'}}"></div>
+
+<main class="flex-grow-1">
+    <div class="container mt-5">
+        <div class="welcome-card bg-white p-5 rounded-4 shadow-lg"
+             style="border: 2px solid var(--primary-color);">
+            <div class="text-center mb-4">
+                <i class="bi bi-speedometer2 display-1 text-primary"></i>
+                <h1 class="display-5 fw-bold mt-3">
+                    Bienvenido, <span sec:authentication="name" class="text-primary"></span>!
+                </h1>
+                <p class="lead">Sistema Integral de Gestión de Flota Vehicular</p>
+            </div>
+
+            <div class="row g-4 mt-3" >
+                <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'DISPATCHER')">
+                    <div class="card h-100 border-primary hover-shadow" >
+                        <div class="card-body text-center">
+                            <i class="bi bi-car-front fs-1 text-primary"></i>
+                            <h5 class="card-title mt-3">Gestión de Vehículos</h5>
+                            <p class="card-text">Asigne vehículos a los viajes y supervise las rutas</p>
+                            <a th:href="@{/vehicles}" class="btn btn-outline-primary">Acceder</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'DRIVER')">
+                    <div class="card h-100 border-success hover-shadow">
+                        <div class="card-body text-center">
+                            <i class="bi bi-map fs-1 text-success"></i>
+                            <h5 class="card-title mt-3">Planificación de Viajes</h5>
+                            <p class="card-text">Consulte su vehículo asignado y actualice el estado de su viaje</p>
+                            <a th:href="@{/trips}" class="btn btn-outline-success">Acceder</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'MECHANIC')">
+                    <div class="card h-100 border-warning hover-shadow">
+                        <div class="card-body text-center">
+                            <i class="bi bi-tools fs-1 text-warning"></i>
+                            <h5 class="card-title mt-3">Mantenimiento</h5>
+                            <p class="card-text">Registre mantenimientos y revise el historial de servicios</p>
+                            <a th:href="@{/maintenance}" class="btn btn-outline-warning">Acceder</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/fragments :: footer}"></div>
+<div th:replace="~{fragments/fragments :: scripts}"></div>
 </body>
 </html>
