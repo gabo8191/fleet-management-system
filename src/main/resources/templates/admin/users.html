@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/fragments :: head('Gestión de Usuarios')}"></head>
+
+<body>
+<div th:replace="~{fragments/fragments :: header}"></div>
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4>Gestión de Usuarios</h4>
+            <a th:href="@{/register}" class="btn btn-primary">Crear Nuevo Usuario</a>
+        </div>
+        <div class="card-body">
+            <div th:if="${users.isEmpty()}" class="alert alert-info">
+                No hay usuarios registrados en el sistema.
+            </div>
+
+            <div th:if="${!users.isEmpty()}" class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.username}"></td>
+                        <td th:text="${user.role != null ? user.role.name.replace('ROLE_', '') : 'Sin rol'}"></td>
+                        <td>
+                            <span th:if="${user.enabled}" class="badge bg-success">Activo</span>
+                            <span th:unless="${user.enabled}" class="badge bg-danger">Inactivo</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" class="btn btn-sm btn-warning">
+                                Editar
+                            </a>
+                            <a th:href="@{/admin/users/toggle/{id}(id=${user.id})}" class="btn btn-sm btn-danger">
+                                <span th:if="${user.enabled}">Desactivar</span>
+                                <span th:unless="${user.enabled}">Activar</span>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/fragments :: footer}"></div>
+<div th:replace="~{fragments/fragments :: scripts}"></div>
+</body>
+</html>
