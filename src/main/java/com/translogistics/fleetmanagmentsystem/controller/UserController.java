@@ -31,6 +31,11 @@ public class UserController {
         return "auth/login";
     }
 
+    @GetMapping({"", "/", "/home"})
+    public String home() {
+        return "home";
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/register")
     public String registerForm(Model model) {
