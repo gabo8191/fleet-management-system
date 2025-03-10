@@ -1,7 +1,11 @@
 package com.translogistics.fleetmanagmentsystem.model;
 
+import com.translogistics.fleetmanagmentsystem.enums.VehicleStatus;
+import com.translogistics.fleetmanagmentsystem.enums.VehicleType;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "vehicles")
@@ -9,11 +13,11 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Vehicle {
+public class Vehicle extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long vehicleId;
+    private Long id;
 
     @Column(unique = true, nullable = false)
     private String licensePlate;
@@ -28,16 +32,21 @@ public class Vehicle {
     @Enumerated(EnumType.STRING)
     private VehicleType type;
 
-    // Relaciones con otras entidades (comentadas hasta su implementación)
-    /*
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private VehicleStatus status = VehicleStatus.ACTIVO;
+
+    @OneToMany(mappedBy = "vehicle")
+    private List<DriverVehicleAssignment> driverAssignments;
+
     @ManyToOne
     @JoinColumn(name = "driver_id")
     private Driver driver;
 
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "vehicle")
+    private List<Trip> trips;
+
+    @OneToMany(mappedBy = "vehicle")
     private List<Maintenance> maintenances;
 
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
-    private List<Trip> trips;
-    */
 }

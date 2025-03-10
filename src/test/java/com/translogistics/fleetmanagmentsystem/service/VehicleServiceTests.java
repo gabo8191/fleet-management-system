@@ -1,9 +1,7 @@
 package com.translogistics.fleetmanagmentsystem.service;
 
 import com.translogistics.fleetmanagmentsystem.model.Vehicle;
-import com.translogistics.fleetmanagmentsystem.model.VehicleType;
 import com.translogistics.fleetmanagmentsystem.repository.VehicleRepository;
-import com.translogistics.fleetmanagmentsystem.service.VehicleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,12 +29,12 @@ public class VehicleServiceTests {
 
     @BeforeEach
     void setUp() {
-        testVehicle = new Vehicle();
-        testVehicle.setVehicleId(1L);
-        testVehicle.setLicensePlate("ABC123");
-        testVehicle.setModel("Test Model");
-        testVehicle.setYear(2020);
-        testVehicle.setType(VehicleType.CARGA);
+//        testVehicle = new Vehicle();
+//        testVehicle.setVehicleId(1L);
+//        testVehicle.setLicensePlate("ABC123");
+//        testVehicle.setModel("Test Model");
+//        testVehicle.setYear(2020);
+//        testVehicle.setType(VehicleType.CARGA);
     }
 
     @Test

@@ -10,7 +10,7 @@ import java.util.Collections;
 
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,9 @@ public class User implements UserDetails {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @OneToOne(mappedBy = "user")
+    private Driver driver;
 
     public User() {}
 
