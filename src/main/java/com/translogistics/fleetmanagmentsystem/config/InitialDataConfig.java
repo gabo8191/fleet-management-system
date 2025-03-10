@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
+
 @Configuration
 public class InitialDataConfig {
 
@@ -67,6 +69,8 @@ public class InitialDataConfig {
                     Role newRole = new Role();
                     newRole.setName(roleName);
                     newRole.setDescription(roleDescription);
+                    newRole.setCreatedAt(LocalDateTime.now());
+                    newRole.setUpdatedAt(LocalDateTime.now());
                     return roleRepository.save(newRole);
                 });
 
@@ -76,6 +80,8 @@ public class InitialDataConfig {
             user.setPassword(passwordEncoder.encode(password));
             user.setRole(role);
             user.setEnabled(true);
+            user.setCreatedAt(LocalDateTime.now());
+            user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);
         }
     }
