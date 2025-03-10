@@ -12,8 +12,8 @@ public class VehicleService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-    public void saveOrUpdate(Vehicle vehicle) {
-        vehicleRepository.save(vehicle);
+    public Vehicle saveOrUpdate(Vehicle vehicle) {
+        return vehicleRepository.save(vehicle);
     }
 
     public List<Vehicle> getList(){
