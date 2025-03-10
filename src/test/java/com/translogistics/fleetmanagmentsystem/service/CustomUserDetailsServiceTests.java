@@ -33,7 +33,6 @@ public class CustomUserDetailsServiceTests {
 
     @BeforeEach
     void setUp() {
-        // Create a test user with a role
         testUser = new User();
         testUser.setUsername("testuser");
         testUser.setPassword("encodedPassword");
@@ -45,13 +44,10 @@ public class CustomUserDetailsServiceTests {
 
     @Test
     void loadUserByUsernameShouldReturnUserDetailsWhenUserExists() {
-        // Given
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
 
-        // When
         UserDetails userDetails = userDetailsService.loadUserByUsername("testuser");
 
-        // Then
         assertNotNull(userDetails);
         assertEquals("testuser", userDetails.getUsername());
         assertEquals("encodedPassword", userDetails.getPassword());
@@ -64,10 +60,8 @@ public class CustomUserDetailsServiceTests {
 
     @Test
     void loadUserByUsernameShouldThrowExceptionWhenUserDoesNotExist() {
-        // Given
         when(userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
 
-        // When & Then
         Exception exception = assertThrows(UsernameNotFoundException.class, () ->
                 userDetailsService.loadUserByUsername("nonexistent")
         );

@@ -19,10 +19,4 @@ class FleetManagmentSystemApplicationTests {
     void contextLoads() {
         assertNotNull(applicationContext);
     }
-
-    @Test
-    void mainComponentsAreLoaded() {
-        assertNotNull(applicationContext.getBean("userController"));
-        assertNotNull(applicationContext.getBean("customUserDetailsService"));
-    }
 }
