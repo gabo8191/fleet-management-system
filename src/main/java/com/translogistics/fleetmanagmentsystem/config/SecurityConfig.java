@@ -27,14 +27,14 @@ public class SecurityConfig {
         http
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        //public routes
-                        .requestMatchers("/", "/home", "/home/", "/register", "/login", "/css/**", "/js/**").permitAll()
-                        // routes for each role
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/dispatcher/**").hasRole("DISPATCHER")
-                        .requestMatchers("/driver/**").hasRole("DRIVER")
-                        .requestMatchers("/mechanic/**").hasRole("MECHANIC")
-                        // any other route requires authentication
+                        .requestMatchers("/", "/home", "/home/", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/login").anonymous()
+                        .requestMatchers("/admin/**", "/register/**", "/users/**").hasRole("ADMIN")
+
+                        .requestMatchers("/dispatcher/**").hasAnyRole("ADMIN", "DISPATCHER")
+                        .requestMatchers("/driver/**").hasAnyRole("ADMIN", "DRIVER")
+                        .requestMatchers("/mechanic/**").hasAnyRole("ADMIN", "MECHANIC")
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
