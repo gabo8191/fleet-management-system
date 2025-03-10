@@ -20,12 +20,7 @@ public class Role {
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private List<User> users;
 
-    public Role() {
-    }
-
-    public Role(String name) {
-        this.name = name;
-    }
+    public Role() {}
 
     public Role(String name, String description) {
         this.name = name;
@@ -68,23 +63,17 @@ public class Role {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Role role = (Role) o;
-
-        return name != null ? name.equals(role.name) : role.name == null;
+        return name.equals(role.name);
     }
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        return name.hashCode();
     }
 
     @Override
     public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return "Role{name='" + name + "', description='" + description + "'}";
     }
 }
