@@ -26,9 +26,14 @@ public class UserController {
     @GetMapping("/login")
     public String login(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
-            return "redirect:/admin/users";
+            return "redirect:/home";
         }
         return "auth/login";
+    }
+
+    @GetMapping({"", "/", "/home"})
+    public String home() {
+        return "home";
     }
 
     @PreAuthorize("hasRole('ADMIN')")

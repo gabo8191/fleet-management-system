@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments :: head('Página no encontrada')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+<div th:replace="~{fragments/fragments :: general-header}"></div>
+
+<main class="flex-grow-1">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <div class="card border-warning shadow-lg">
+                    <div class="card-body py-5">
+                        <div class="error-icon mb-4">
+                            <i class="bi bi-emoji-frown display-1 text-warning"></i>
+                        </div>
+                        <h1 class="display-4 fw-bold text-dark mb-3">404 - Página No Encontrada</h1>
+                        <p class="lead text-muted mb-4">
+                            ¡Ups! La página que buscas no existe o ha sido movida.
+                        </p>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a th:href="@{/home}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-house-door me-2"></i>Volver al Inicio
+                            </a>
+                            <button onclick="history.back()" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left me-2"></i>Volver Atrás
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/fragments :: footer}"></div>
+<div th:replace="~{fragments/fragments :: scripts}"></div>
+
+<style>
+    .error-icon {
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-30px); }
+        60% { transform: translateY(-15px); }
+    }
+
+    .card-border-warning {
+        border-width: 3px;
+    }
+</style>
+</body>
+</html>

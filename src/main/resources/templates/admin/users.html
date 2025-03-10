@@ -4,13 +4,16 @@
 <head th:replace="~{fragments/fragments :: head('Gestión de Usuarios')}"></head>
 
 <body>
-<div th:replace="~{fragments/fragments :: header}"></div>
+<div th:replace="~{fragments/fragments :: admin-header}"></div>
 
+<div class="flex-grow-1">
 <div class="container mt-4">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h4>Gestión de Usuarios</h4>
-            <a th:href="@{/register}" class="btn btn-primary">Crear Nuevo Usuario</a>
+            <h4 class="mb-0">Gestión de Usuarios</h4>
+            <a th:href="@{/register}" class="btn btn-primary">
+                <i class="bi bi-person-plus me-2"></i>Nuevo Usuario
+            </a>
         </div>
         <div class="card-body">
             <div th:if="${users.isEmpty()}" class="alert alert-info">
@@ -33,18 +36,23 @@
                         <td th:text="${user.id}"></td>
                         <td th:text="${user.username}"></td>
                         <td th:text="${user.role != null ? user.role.name.replace('ROLE_', '') : 'Sin rol'}"></td>
-                        <td>
+                        <td >
                             <span th:if="${user.enabled}" class="badge bg-success">Activo</span>
                             <span th:unless="${user.enabled}" class="badge bg-danger">Inactivo</span>
                         </td>
                         <td>
-                            <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" class="btn btn-sm btn-warning">
-                                Editar
-                            </a>
-                            <a th:href="@{/admin/users/toggle/{id}(id=${user.id})}" class="btn btn-sm btn-danger">
-                                <span th:if="${user.enabled}">Desactivar</span>
-                                <span th:unless="${user.enabled}">Activar</span>
-                            </a>
+                            <div class="d-flex gap-2">
+                                <a th:href="@{/admin/users/edit/{id}(id=${user.id})}"
+                                   class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </a>
+                                <a th:href="@{/admin/users/toggle/{id}(id=${user.id})}" th:if="${user.role.name != 'ROLE_ADMIN'}"
+                                   class="btn btn-danger btn-sm">
+                                    <i class="bi bi-power" th:if="${user.enabled}"></i>
+                                    <i class="bi bi-arrow-clockwise" th:unless="${user.enabled}"></i>
+                                    <span th:text="${user.enabled ? ' Desactivar' : ' Activar'}"></span>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     </tbody>
@@ -52,6 +60,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <div th:replace="~{fragments/fragments :: footer}"></div>

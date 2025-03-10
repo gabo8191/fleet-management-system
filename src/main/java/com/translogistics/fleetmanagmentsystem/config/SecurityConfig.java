@@ -1,5 +1,6 @@
 package com.translogistics.fleetmanagmentsystem.config;
 
+import com.translogistics.fleetmanagmentsystem.exceptions.CustomAccessDeniedHandler;
 import com.translogistics.fleetmanagmentsystem.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,32 +24,29 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomAccessDeniedHandler accessDeniedHandler) throws Exception {
         http
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "/home/", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/login").anonymous()
-                        .requestMatchers("/admin/**", "/register/**", "/users/**").hasRole("ADMIN")
-
+                        .requestMatchers("/", "/home", "/login", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/dispatcher/**").hasAnyRole("ADMIN", "DISPATCHER")
                         .requestMatchers("/driver/**").hasAnyRole("ADMIN", "DRIVER")
                         .requestMatchers("/mechanic/**").hasAnyRole("ADMIN", "MECHANIC")
-
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/home")
+                        .defaultSuccessUrl("/home", true)
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )
-                .rememberMe(remember -> remember
-                        .key("uniqueAndSecret")
-                        .tokenValiditySeconds(86400)
+                .exceptionHandling(exceptions -> exceptions
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
                 .userDetailsService(customUserDetailsService);
 
