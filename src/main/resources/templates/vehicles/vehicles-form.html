@@ -25,7 +25,7 @@
             <label class="form-label">Placa:</label>
             <input
               type="text"
-              th:field="*{plate}"
+              th:field="*{licensePlate}"
               class="form-control"
               required
             />
@@ -54,9 +54,22 @@
           <div class="mb-3">
             <label class="form-label">Tipo:</label>
             <select th:field="*{type}" class="form-select">
-              <option value="Camión">Camión</option>
-              <option value="Autobús">Autobús</option>
-              <option value="Furgoneta">Furgoneta</option>
+              <option
+                th:each="type : ${T(com.translogistics.fleetmanagmentsystem.enums.VehicleType).values()}"
+                th:value="${type}"
+                th:text="${type}"
+              ></option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Estado:</label>
+            <select th:field="*{status}" class="form-select">
+              <option
+                th:each="status : ${T(com.translogistics.fleetmanagmentsystem.enums.VehicleStatus).values()}"
+                th:value="${status}"
+                th:text="${status}"
+              ></option>
             </select>
           </div>
 
