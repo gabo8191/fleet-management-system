@@ -78,11 +78,10 @@ public class VehicleService {
         Vehicle vehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vehículo no encontrado"));
 
-        // Lógica de transición de estados
         VehicleStatus newStatus = switch (vehicle.getStatus()) {
             case ACTIVO -> VehicleStatus.FUERA_DE_SERVICIO;
             case FUERA_DE_SERVICIO -> VehicleStatus.ACTIVO;
-            default -> vehicle.getStatus(); // Mantiene el estado actual si no es ACTIVO/FUERA_DE_SERVICIO
+            default -> vehicle.getStatus();
         };
 
         vehicle.setStatus(newStatus);
@@ -90,32 +89,26 @@ public class VehicleService {
     }
 
     public void assignDriver(Long vehicleId, Long driverId, LocalDateTime assignmentStart) {
-        // Validar existencia del vehículo
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new VehicleNotFoundException("Vehículo no encontrado"));
 
-        // Validar existencia del conductor
         Driver driver = driverRepository.findById(driverId)
                 .orElseThrow(() -> new DriverNotFoundException("Conductor no encontrado"));
 
-        // Calcular inicio y fin del día
         LocalDate date = assignmentStart.toLocalDate();
-        LocalDateTime startOfDay = date.atStartOfDay(); // Ej: 2024-01-15T00:00:00
-        LocalDateTime endOfDay = date.atTime(LocalTime.MAX); // Ej: 2024-01-15T23:59:59.999999999
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
 
-        // Validar asignaciones existentes en el día
         if (assignmentRepository.existsByDriverAndAssignmentStartBetween(driver, startOfDay, endOfDay)) {
             throw new IllegalStateException("El conductor ya tiene una asignación en esta fecha");
         }
 
-        // Crear y guardar la asignación
         DriverVehicleAssignment assignment = new DriverVehicleAssignment();
         assignment.setVehicle(vehicle);
         assignment.setDriver(driver);
         assignment.setAssignmentStart(assignmentStart);
         assignmentRepository.save(assignment);
 
-        // Actualizar estado del vehículo
         vehicle.setStatus(VehicleStatus.ASIGNADO_A_VIAJE);
         vehicleRepository.save(vehicle);
 

@@ -58,8 +58,6 @@ public class DriverService {
     }
 
     private void mapDtoToEntity(DriverDto dto, Driver entity) {
-        entity.setName(dto.getName());
-        entity.setLastName(dto.getLastName());
         entity.setLicenseNumber(dto.getLicenseNumber());
         entity.setExperienceYears(dto.getExperienceYears());
     }

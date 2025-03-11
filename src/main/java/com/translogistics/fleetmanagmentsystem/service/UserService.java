@@ -1,10 +1,13 @@
 package com.translogistics.fleetmanagmentsystem.service;
 
+import com.translogistics.fleetmanagmentsystem.dto.DriverDto;
 import com.translogistics.fleetmanagmentsystem.dto.UserDto;
+import com.translogistics.fleetmanagmentsystem.model.Driver;
 import com.translogistics.fleetmanagmentsystem.model.Role;
 import com.translogistics.fleetmanagmentsystem.model.User;
 import com.translogistics.fleetmanagmentsystem.repository.RoleRepository;
 import com.translogistics.fleetmanagmentsystem.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,49 +45,91 @@ public class UserService {
         return userRepository.findByUsername(username).isPresent();
     }
 
-    public User createUser(UserDto userDto, Long roleId) {
-        // Buscar el rol seleccionado
-        Role role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new RuntimeException("Error: Rol no encontrado"));
-
+    public void createUser(UserDto userDto, Long roleId) {
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setEnabled(true);
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
         user.setRole(role);
 
-        return userRepository.save(user);
-    }
-
-    public User updateUser(Long userId, UserDto userDto, Long roleId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        // Actualizar solo si hay cambios
-        if (userDto.getUsername() != null && !userDto.getUsername().isEmpty()) {
-            user.setUsername(userDto.getUsername());
+        if (role.getName().equals("ROLE_DRIVER") && userDto.getDriver() != null) {
+            Driver driver = new Driver();
+            driver.setLicenseNumber(userDto.getDriver().getLicenseNumber());
+            driver.setExperienceYears(userDto.getDriver().getExperienceYears());
+            driver.setUser(user);
+            user.setDriver(driver);
         }
 
-        // Actualizar contraseña solo si se proporciona una nueva
-        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+        userRepository.save(user);
+    }
+
+    public UserDto findUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        UserDto userDto = new UserDto();
+        userDto.setUsername(user.getUsername());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
+
+        if (user.getRole() != null) {
+            userDto.setRoleId(user.getRole().getId());
+        }
+
+        if (user.getDriver() != null) {
+            DriverDto driverDto = new DriverDto();
+            driverDto.setLicenseNumber(user.getDriver().getLicenseNumber());
+            driverDto.setExperienceYears(user.getDriver().getExperienceYears());
+            userDto.setDriver(driverDto);
+        }
+
+        return userDto;
+    }
+
+    @Transactional
+    public void updateUser(Long id, UserDto userDto, boolean updatePassword) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+
+        if (updatePassword) {
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         }
 
-        // Actualizar rol si se proporciona uno nuevo
-        if (roleId != null) {
-            Role role = roleRepository.findById(roleId)
-                    .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
-            user.setRole(role);
+        Role role = roleRepository.findById(userDto.getRoleId())
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+        user.setRole(role);
+
+        if (role.getName().equals("ROLE_DRIVER")) {
+            if (user.getDriver() != null) {
+                user.getDriver().setLicenseNumber(userDto.getDriver().getLicenseNumber());
+                user.getDriver().setExperienceYears(userDto.getDriver().getExperienceYears());
+            } else {
+                Driver driver = new Driver();
+                driver.setLicenseNumber(userDto.getDriver().getLicenseNumber());
+                driver.setExperienceYears(userDto.getDriver().getExperienceYears());
+                driver.setUser(user);
+                user.setDriver(driver);
+            }
+        } else {
+            if (user.getDriver() != null) {
+                user.setDriver(null);
+            }
         }
 
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     public User toggleUserStatus(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Cambiar el estado (activar/desactivar)
         user.setEnabled(!user.isEnabled());
 
         return userRepository.save(user);

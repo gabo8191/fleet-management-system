@@ -20,6 +20,12 @@ public class User extends BaseEntity implements UserDetails  {
     private String username;
 
     @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
     private String password;
 
     private boolean enabled = true;
@@ -28,7 +34,7 @@ public class User extends BaseEntity implements UserDetails  {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Driver driver;
 
     public User() {}
@@ -78,6 +84,32 @@ public class User extends BaseEntity implements UserDetails  {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

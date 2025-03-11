@@ -1,10 +1,12 @@
 package com.translogistics.fleetmanagmentsystem.controller;
 
+import com.translogistics.fleetmanagmentsystem.dto.DriverDto;
 import com.translogistics.fleetmanagmentsystem.dto.UserDto;
 import com.translogistics.fleetmanagmentsystem.model.Role;
 import com.translogistics.fleetmanagmentsystem.model.User;
 import com.translogistics.fleetmanagmentsystem.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -49,6 +52,7 @@ public class UserController {
     @PostMapping("/register")
     public String register(
             @Valid @ModelAttribute("user") UserDto userDto,
+            @Valid @ModelAttribute("driver") DriverDto driverDto,
             BindingResult result,
             @RequestParam("roleId") Long roleId,
             Model model) {
@@ -75,19 +79,16 @@ public class UserController {
         return "admin/users";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/users/edit/{id}")
-    public String editUserForm(@PathVariable Long id, Model model) {
-        User user = userService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public String showEditForm(@PathVariable Long id, Model model) {
+        UserDto userDto = userService.findUserById(id);
 
-        UserDto userDto = new UserDto();
-        userDto.setUsername(user.getUsername());
+        if (userDto == null) {
+            return "redirect:/admin/users?error=user_not_found";
+        }
 
         model.addAttribute("user", userDto);
-        model.addAttribute("userId", id);
         model.addAttribute("roles", userService.findAllRoles());
-        model.addAttribute("currentRole", user.getRole());
 
         return "admin/edit-user";
     }
@@ -98,17 +99,23 @@ public class UserController {
             @PathVariable Long id,
             @Valid @ModelAttribute("user") UserDto userDto,
             BindingResult result,
-            @RequestParam("roleId") Long roleId,
             Model model) {
 
         if (result.hasErrors()) {
             model.addAttribute("roles", userService.findAllRoles());
-            model.addAttribute("userId", id);
             return "admin/edit-user";
         }
 
-        userService.updateUser(id, userDto, roleId);
-        return "redirect:/admin/users";
+        boolean updatePassword = userDto.getPassword() != null && !userDto.getPassword().isEmpty();
+
+        try {
+            userService.updateUser(id, userDto, updatePassword);
+            return "redirect:/admin/users?success=user_updated";
+        } catch (Exception e) {
+            model.addAttribute("roles", userService.findAllRoles());
+            model.addAttribute("error", "Error al actualizar el usuario: " + e.getMessage());
+            return "admin/edit-user";
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
