@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Actualizar Estado del Viaje</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="text-primary">Actualizar Estado del Viaje</h2>
+        <form th:action="@{/trips/update}" method="post">
+            <!-- ID del viaje (oculto) -->
+            <input type="hidden" name="tripId" th:value="${trip.id}">
+
+            <!-- Estado del viaje -->
+            <div class="form-group">
+                <label for="status">Estado del viaje:</label>
+                <select id="status" name="status" class="form-control">
+                    <option value="En curso">En curso</option>
+                    <option value="Finalizado">Finalizado</option>
+                    <option value="Cancelado">Cancelado</option>
+                </select>
+            </div>
+
+            <!-- Incidentes -->
+            <div class="form-group">
+                <label for="incidents">Incidentes:</label>
+                <textarea id="incidents" name="incidents" class="form-control" rows="3"></textarea>
+            </div>
+
+            <!-- Cambios en la ruta -->
+            <div class="form-group">
+                <label for="routeChanges">Cambios en la ruta:</label>
+                <textarea id="routeChanges" name="routeChanges" class="form-control" rows="3"></textarea>
+            </div>
+
+            <!-- Botones -->
+            <button type="submit" class="btn btn-success">Actualizar</button>
+            <a th:href="@{/trips}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
