@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+  <head th:replace="~{fragments :: head('Registrar Viaje - TransLogistics')}">
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <div th:replace="~{fragments :: admin-header}"></div>
+
+    <main class="main-content">
+      <div class="container mt-5">
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <div class="card auth-card hover-shadow">
+              <div class="card-body">
+                <h2 class="card-title text-center mb-4">
+                  Registrar Nuevo Viaje
+                </h2>
+
+                <!-- Formulario de Registro de Viaje -->
+                <form th:action="@{/api/trips/register}" method="post">
+                  <div class="mb-3">
+                    <label for="origin" class="form-label">Origen</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="origin"
+                      name="origin"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="destination" class="form-label">Destino</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="destination"
+                      name="destination"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="startDate" class="form-label"
+                      >Fecha de Inicio</label
+                    >
+                    <input
+                      type="datetime-local"
+                      class="form-control"
+                      id="startDate"
+                      name="startDate"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="vehicle" class="form-label">Vehículo</label>
+                    <select
+                      class="form-select"
+                      id="vehicle"
+                      name="vehicleId"
+                      required
+                    >
+                      <option value="">Seleccione un vehículo</option>
+                      <option
+                        th:each="vehicle : ${vehicles}"
+                        th:value="${vehicle.id}"
+                        th:text="${vehicle.plate}"
+                      ></option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="driver" class="form-label">Conductor</label>
+                    <select
+                      class="form-select"
+                      id="driver"
+                      name="driverId"
+                      required
+                    >
+                      <option value="">Seleccione un conductor</option>
+                      <option
+                        th:each="driver : ${drivers}"
+                        th:value="${driver.id}"
+                        th:text="${driver.name}"
+                      ></option>
+                    </select>
+                  </div>
+                  <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                      Registrar Viaje
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div th:replace="~{fragments :: footer}"></div>
+
+    <div th:replace="~{fragments :: scripts}"></div>
+  </body>
+</html>
