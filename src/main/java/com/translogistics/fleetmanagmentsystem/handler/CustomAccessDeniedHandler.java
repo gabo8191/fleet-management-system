@@ -1,5 +1,5 @@
 
-package com.translogistics.fleetmanagmentsystem.exceptions;
+package com.translogistics.fleetmanagmentsystem.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +15,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
-        response.sendError(HttpServletResponse.SC_NOT_FOUND); // Retorna 404 en lugar de 403
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
 }
