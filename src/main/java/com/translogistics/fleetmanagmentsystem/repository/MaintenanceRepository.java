@@ -15,4 +15,6 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Long> 
     List<Maintenance> findByType(MaintenanceType type);
     List<Maintenance> findByDateBetween(LocalDate start, LocalDate end);
     List<Maintenance> findByVehicleAndDateBetween(Vehicle vehicle, LocalDate start, LocalDate end);
+    List<Maintenance> findByVehicleIdOrderByDateDesc(Long vehicleId);
+    List<Maintenance> findByTypeAndDateGreaterThanEqual(MaintenanceType type, LocalDate date);
 }
