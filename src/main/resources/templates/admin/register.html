@@ -3,8 +3,9 @@
 <head th:replace="~{fragments/fragments :: head('Registro de Usuario')}"></head>
 
 <body class="background-gradient">
-<div th:replace="~{fragments/fragments :: header}"></div>
+<div th:replace="~{fragments/fragments :: admin-header}"></div>
 
+<div class="flex-grow-1">
 <div class="container">
     <div class="auth-card bg-white">
         <h2 class="text-center mb-4">Creación de Usuario</h2>
@@ -49,6 +50,7 @@
             </div>
         </form>
     </div>
+</div>
 </div>
 
 <div th:replace="~{fragments/fragments :: footer}"></div>
