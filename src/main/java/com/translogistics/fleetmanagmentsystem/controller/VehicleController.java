@@ -144,7 +144,7 @@ public class VehicleController {
         return "vehicles/maintenance-history"; // Vista del historial
     }
 
-    @PreAuthorize("hasRole('MECHANIC')") // Solo Mecánico
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MECHANIC')")
     @GetMapping("/{id}/schedule-maintenance")
     public String showScheduleMaintenanceForm(@PathVariable Long id, Model model) {
         model.addAttribute("vehicleId", id);
@@ -152,6 +152,8 @@ public class VehicleController {
         return "vehicles/schedule-maintenance"; // Formulario de programación
     }
 
+
+    //RF 10 Programar mantenimientos preventivos
     @PreAuthorize("hasRole('MECHANIC')")
     @PostMapping("/{id}/schedule-maintenance")
     public String scheduleMaintenance(

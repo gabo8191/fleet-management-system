@@ -111,7 +111,5 @@ public class VehicleService {
 
         vehicle.setStatus(VehicleStatus.ASIGNADO_A_VIAJE);
         vehicleRepository.save(vehicle);
-
-
     }
 }
