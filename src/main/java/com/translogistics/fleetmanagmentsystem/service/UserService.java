@@ -5,6 +5,7 @@ import com.translogistics.fleetmanagmentsystem.dto.UserDto;
 import com.translogistics.fleetmanagmentsystem.model.Driver;
 import com.translogistics.fleetmanagmentsystem.model.Role;
 import com.translogistics.fleetmanagmentsystem.model.User;
+import com.translogistics.fleetmanagmentsystem.repository.DriverRepository;
 import com.translogistics.fleetmanagmentsystem.repository.RoleRepository;
 import com.translogistics.fleetmanagmentsystem.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -19,14 +20,18 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final DriverRepository driverRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       DriverRepository driverRepository
+    ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.driverRepository = driverRepository;
     }
 
     public List<User> findAllUsers() {
@@ -93,33 +98,39 @@ public class UserService {
     @Transactional
     public void updateUser(Long id, UserDto userDto, boolean updatePassword) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
+
+        if (userDto.getRoleId() != null &&
+                (user.getRole() == null || !user.getRole().getId().equals(userDto.getRoleId()))) {
+            Role newRole = roleRepository.findById(userDto.getRoleId())
+                    .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
+            user.setRole(newRole);
+        }
 
         if (updatePassword) {
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         }
 
-        Role role = roleRepository.findById(userDto.getRoleId())
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
-        user.setRole(role);
-
-        if (role.getName().equals("ROLE_DRIVER")) {
-            if (user.getDriver() != null) {
-                user.getDriver().setLicenseNumber(userDto.getDriver().getLicenseNumber());
-                user.getDriver().setExperienceYears(userDto.getDriver().getExperienceYears());
-            } else {
-                Driver driver = new Driver();
-                driver.setLicenseNumber(userDto.getDriver().getLicenseNumber());
-                driver.setExperienceYears(userDto.getDriver().getExperienceYears());
+        if ("ROLE_DRIVER".equals(user.getRole().getName())) {
+            Driver driver = user.getDriver();
+            if (driver == null) {
+                driver = new Driver();
                 driver.setUser(user);
                 user.setDriver(driver);
             }
+
+            if (userDto.getDriver() != null) {
+                driver.setLicenseNumber(userDto.getDriver().getLicenseNumber());
+                driver.setExperienceYears(userDto.getDriver().getExperienceYears());
+            }
         } else {
             if (user.getDriver() != null) {
+                Driver driver = user.getDriver();
                 user.setDriver(null);
+                driverRepository.delete(driver);
             }
         }
 
@@ -133,6 +144,12 @@ public class UserService {
         user.setEnabled(!user.isEnabled());
 
         return userRepository.save(user);
+    }
+
+    public boolean isDriverRole(Long roleId) {
+        if (roleId == null) return false;
+        Role role = roleRepository.findById(roleId).orElse(null);
+        return role != null && "ROLE_DRIVER".equals(role.getName());
     }
 
     public List<Role> findAllRoles() {

@@ -8,8 +8,6 @@ public class UserDto {
     @NotBlank
     private String username;
 
-
-
     @NotBlank
     @Size(min = 6, max = 20)
     private String password;
@@ -26,7 +24,6 @@ public class UserDto {
 
     private String confirmPassword;
 
-    @Valid
     private DriverDto driver;
 
     @Valid
