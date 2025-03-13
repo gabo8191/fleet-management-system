@@ -10,7 +10,10 @@
         <div class="auth-card bg-white">
             <h2 class="text-center mb-4">Editar Usuario</h2>
 
-            <form th:action="@{/admin/users/edit/{id}(id=${user.id})}" th:object="${user}" method="post">
+
+            <form th:action="@{/admin/users/edit/__${user.id}__}" method="post" th:object="${user}">
+
+
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="firstName" class="form-label">Nombre</label>
@@ -38,7 +41,7 @@
                 <div class="mb-3">
                     <label for="password" class="form-label">Nueva Contraseña <span class="text-muted">(Dejar en blanco para mantener la actual)</span></label>
                     <input type="password" class="form-control" id="password"
-                           th:field="*{password}">
+                           name="password">
                     <div class="text-danger" th:if="${#fields.hasErrors('password')}"
                          th:errors="*{password}"></div>
                 </div>
@@ -63,12 +66,11 @@
                     </select>
                 </div>
 
-                <!-- Sección adicional para Driver -->
                 <div id="driverFields" th:style="${user.driver != null ? 'display: block' : 'display: none'}">
                     <div class="mb-3">
                         <label for="licenseNumber" class="form-label">Número de Licencia</label>
                         <input type="text" class="form-control" id="licenseNumber"
-                               name="licenseNumber" th:field="*{driver?.licenseNumber}">
+                               name="driver.licenseNumber" th:field="*{driver.licenseNumber}">
                         <div class="text-danger" th:if="${#fields.hasErrors('driver.licenseNumber')}"
                              th:errors="*{driver.licenseNumber}"></div>
                     </div>
@@ -76,10 +78,13 @@
                     <div class="mb-3">
                         <label for="experienceYears" class="form-label">Años de Experiencia</label>
                         <input type="number" class="form-control" id="experienceYears"
-                               name="experienceYears" th:field="*{driver?.experienceYears}">
+                               name="driver.experienceYears" th:field="*{driver.experienceYears}">
                         <div class="text-danger" th:if="${#fields.hasErrors('driver.experienceYears')}"
                              th:errors="*{driver.experienceYears}"></div>
                     </div>
+
+                    <input type="hidden" th:if="${user.driver != null}" th:field="*{driver.id}" />
+                    <input type="hidden" th:if="${user.driver != null}" th:field="*{driver.userId}" />
                 </div>
 
                 <div class="d-grid gap-2">
@@ -99,9 +104,21 @@
 
         driverFields.style.display = isDriver ? 'block' : 'none';
 
-        const driverInputs = driverFields.querySelectorAll('input');
-        driverInputs.forEach(input => input.required = isDriver);
+        const driverInputs = driverFields.querySelectorAll('input:not([type="hidden"])');
+        driverInputs.forEach(input => {
+            input.required = isDriver;
+        });
     }
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (password && password !== confirmPassword) {
+            event.preventDefault();
+            alert('Las contraseñas no coinciden');
+        }
+    });
 
     document.addEventListener('DOMContentLoaded', function () {
         const roleSelect = document.getElementById('roleId');
