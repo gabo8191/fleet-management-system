@@ -31,18 +31,18 @@ jobs:
           echo "Latest tag found: $LATEST_TAG"
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
 
-      - name: Debug - Print cliff.toml content
-        run: cat cliff.toml
+      - name: Set up git-cliff
+        run: |
+          curl -L https://github.com/orhun/git-cliff/releases/download/v1.3.1/git-cliff-1.3.1-x86_64-unknown-linux-gnu.tar.gz | tar xz
+          mv git-cliff-1.3.1/git-cliff /usr/local/bin/
+          chmod +x /usr/local/bin/git-cliff
 
       - name: Generate CHANGELOG.md
-        uses: orhun/git-cliff-action@v2
-        id: git-cliff
-        with:
-          config: cliff.toml
-          args: --verbose --output CHANGELOG.md
-
-      - name: Debug - Print Generated CHANGELOG
-        run: cat CHANGELOG.md
+        run: |
+          echo "Generating changelog with git-cliff..."
+          git-cliff --config cliff.toml --output CHANGELOG.md
+          echo "Content of generated CHANGELOG.md:"
+          cat CHANGELOG.md
 
       - name: Check for changes
         id: check-changes
@@ -73,11 +73,11 @@ jobs:
           delete-branch: true
           labels: documentation,automated
 
-      - name: Enable Auto-merge
+      - name: Comment on PR
         if: steps.check-changes.outputs.HAS_CHANGES == 'true' && steps.create-pull-request.outputs.pull-request-number != ''
         run: |
           PR_NUMBER="${{ steps.create-pull-request.outputs.pull-request-number }}"
-          echo "Activando auto-merge para PR #$PR_NUMBER"
-          gh pr merge --auto --merge "$PR_NUMBER"
+          echo "PR #$PR_NUMBER creado correctamente. Por favor, revisa y haz merge manualmente."
+          gh pr comment "$PR_NUMBER" --body "✅ Changelog actualizado automáticamente. Por favor, revisa los cambios y haz merge cuando estés listo."
         env:
           GH_TOKEN: ${{ secrets.CHANGELOG_TOKEN }}
