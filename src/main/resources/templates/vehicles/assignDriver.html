@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/fragments :: head('Asignar Conductor')}"></head>
+<body>
+<!-- Choose the header based on the role -->
+<div th:replace="~{fragments/fragments :: ${#authorization.expression('hasRole(''ADMIN'')') ? 'admin-header' : 'general-header'}}"></div>
+
+<div class="container mt-4">
+  <!-- Vehicles Table -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h4>Vehículos Disponibles</h4>
+    </div>
+    <div class="card-body">
+      <div th:if="${vehicles.isEmpty()}" class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i> No hay vehículos disponibles.
+      </div>
+      <div th:if="${!vehicles.isEmpty()}" class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Placa</th>
+            <th>Modelo</th>
+            <th>Año</th>
+            <th>Acciones</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="vehicle : ${vehicles}">
+            <td th:text="${vehicle.id}"></td>
+            <td th:text="${vehicle.licensePlate}"></td>
+            <td th:text="${vehicle.model}"></td>
+            <td th:text="${vehicle.year}"></td>
+            <td>
+              <!-- This button redirects to a page with the vehicle pre-selected for assignment -->
+              <a th:href="@{'/vehicles/assign-driver-form/' + ${vehicle.id}}"
+                 class="btn btn-sm btn-primary">
+                <i class="bi bi-person-plus me-1"></i> Asignar Conductor
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assignment Form -->
+  <!-- Alternatively, if you prefer to have the assignment form on the same page, allow the user to choose the vehicle from a select dropdown. -->
+  <div class="card">
+    <div class="card-header">
+      <h4>Asignar Conductor</h4>
+    </div>
+    <div class="card-body">
+      <div th:if="${successMessage}" class="alert alert-success">
+        <i class="bi bi-check-circle me-2"></i>
+        <span th:text="${successMessage}"></span>
+      </div>
+      <div th:if="${errorMessage}" class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${errorMessage}"></span>
+      </div>
+      <form th:action="@{/vehicles/assign-driver}" method="post">
+        <div class="mb-3">
+          <label for="vehicleId" class="form-label">Vehículo</label>
+          <select class="form-control" id="vehicleId" name="vehicleId" required>
+            <option value="" disabled selected>Seleccione un vehículo</option>
+            <option th:each="vehicle : ${vehicles}"
+                    th:value="${vehicle.id}"
+                    th:text="${vehicle.licensePlate + ' - ' + vehicle.model}">
+            </option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="driverId" class="form-label">Conductor</label>
+          <select class="form-control" id="driverId" name="driverId" required>
+            <option value="" disabled selected>Seleccione un conductor</option>
+            <option th:each="driver : ${drivers}"
+                    th:value="${driver.id}"
+                    th:text="${driver.name}">
+            </option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="assignmentStart" class="form-label">Fecha y Hora de Asignación</label>
+          <input type="datetime-local" class="form-control" id="assignmentStart" name="assignmentStart" required>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-check-circle me-2"></i> Asignar
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div th:replace="~{fragments/fragments :: footer}"></div>
+<div th:replace="~{fragments/fragments :: scripts}"></div>
+</body>
+</html>

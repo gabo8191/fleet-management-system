@@ -31,7 +31,7 @@ public class VehicleController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String listVehicles(Model model) {
         model.addAttribute("vehicles", vehicleService.findAllVehicles());
         return "vehicles/vehicles";
@@ -163,6 +163,18 @@ public class VehicleController {
         }
         return "redirect:/vehicles";
     }
+
+
+    @GetMapping("/assign-driver-form")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
+    public String showAssignDriverForm(Model model) {
+        model.addAttribute("vehicles", vehicleService.findAllVehicles());
+        model.addAttribute("drivers", driverService.findAllDrivers());
+        return "vehicles/assignDriver"; // Make sure this exactly matches the file name and path
+    }
+
+
+
 
     private VehicleDto convertToDto(Vehicle vehicle) {
         VehicleDto vehicleDto = new VehicleDto();
