@@ -13,7 +13,6 @@ import java.util.List;
 @Repository
 public interface DriverVehicleAssignmentRepository extends JpaRepository<DriverVehicleAssignment, Long> {
 
-
     boolean existsByDriverAndAssignmentStartBetween(
             Driver driver,
             LocalDateTime start,
