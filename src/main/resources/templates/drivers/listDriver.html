@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head
+    th:replace="~{fragments/fragments :: head('Conductores Disponibles')}"
+  ></head>
+
+  <body>
+    <div th:replace="~{fragments/fragments :: header}"></div>
+
+    <div class="container mt-4">
+      <div class="card">
+        <div class="card-header">
+          <h4>Conductores Disponibles</h4>
+        </div>
+        <div class="card-body">
+          
+          <div th:if="${successMessage}" class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${successMessage}"></span>
+          </div>
+          <div th:if="${errorMessage}" class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${errorMessage}"></span>
+          </div>
+
+          <!-- Filtro de búsqueda -->
+          <div class="mb-3">
+            <form th:action="@{/drivers}" method="get">
+              <input
+                type="text"
+                class="form-control"
+                name="search"
+                placeholder="Buscar conductor..."
+              />
+              <button type="submit" class="btn btn-primary mt-2">Buscar</button>
+            </form>
+          </div>
+
+          <!-- Tabla de conductores -->
+          <div th:if="${drivers.isEmpty()}" class="alert alert-info">
+            No hay conductores registrados en el sistema.
+          </div>
+
+          <div th:if="${!drivers.isEmpty()}" class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Licencia</th>
+                  <th>Experiencia</th>
+                  <th sec:authorize="hasRole('ADMIN')">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="driver : ${drivers}">
+                  <td th:text="${driver.id}"></td>
+                  <td th:text="${driver.name}"></td>
+                  <td th:text="${driver.license}"></td>
+                  <td th:text="${driver.experience}"></td>
+                  <td sec:authorize="hasRole('ADMIN')">
+                    <a
+                      th:href="@{/assignments/assign?driverId={id}(id=${driver.id})}"
+                      class="btn btn-sm btn-primary"
+                    >
+                      <i class="bi bi-car-front me-1"></i>Asignar a Vehículo
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="~{fragments/fragments :: footer}"></div>
+    <div th:replace="~{fragments/fragments :: scripts}"></div>
+  </body>
+</html>
