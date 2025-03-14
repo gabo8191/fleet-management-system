@@ -1,46 +1,31 @@
-package com.translogistics.fleetmanagmentsystem.model;
+package com.translogistics.fleetmanagmentsystem.dto;
 
 import com.translogistics.fleetmanagmentsystem.enums.MaintenanceType;
-import jakarta.persistence.*;
-
+import jakarta.validation.constraints.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "maintenances")
-public class Maintenance extends BaseEntity{
+public class MaintenanceDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @NotNull(message = "El tipo de mantenimiento es obligatorio")
     private MaintenanceType type;
 
-    @Column(nullable = false)
+    @NotNull(message = "La fecha es obligatoria")
+    @PastOrPresent(message = "La fecha no puede ser futura")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
-    @Column(nullable = false)
+    @NotBlank(message = "La descripción es obligatoria")
     private String description;
 
-    @Column(nullable = false)
-    private double cost;
+    @PositiveOrZero(message = "El costo no puede ser negativo")
+    @NotNull(message = "El costo es obligatorio")
+    private Double cost;
 
-    @Column(nullable = false)
+    @NotBlank(message = "El proveedor es obligatorio")
     private String provider;
 
-    @ManyToOne
-    @JoinColumn(name = "vehicle_id")
-    private Vehicle vehicle;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    // Getters y Setters
     public MaintenanceType getType() {
         return type;
     }
@@ -65,11 +50,11 @@ public class Maintenance extends BaseEntity{
         this.description = description;
     }
 
-    public double getCost() {
+    public Double getCost() {
         return cost;
     }
 
-    public void setCost(double cost) {
+    public void setCost(Double cost) {
         this.cost = cost;
     }
 
@@ -79,13 +64,5 @@ public class Maintenance extends BaseEntity{
 
     public void setProvider(String provider) {
         this.provider = provider;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
     }
 }

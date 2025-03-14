@@ -1,6 +1,6 @@
 package com.translogistics.fleetmanagmentsystem.config;
 
-import com.translogistics.fleetmanagmentsystem.exceptions.CustomAccessDeniedHandler;
+import com.translogistics.fleetmanagmentsystem.handler.CustomAccessDeniedHandler;
 import com.translogistics.fleetmanagmentsystem.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

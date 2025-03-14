@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/fragments :: head('Editar Vehículo')}"></head>
+
+<body>
+<div th:replace="~{fragments/fragments :: admin-header}"></div>
+
+<div class="container mt-4">
+    <div class="auth-card bg-white">
+        <h2 class="text-center mb-4">Editar Vehículo</h2>
+
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <form th:action="@{/vehicles/edit/{id}(id=${vehicleId})}" th:object="${vehicle}" method="post">
+            <div class="mb-3">
+                <label class="form-label">Placa:</label>
+                <input type="text"
+                       th:field="*{licensePlate}"
+                       class="form-control"
+                       th:classappend="${#fields.hasErrors('licensePlate')} ? 'is-invalid'"
+                       required />
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('licensePlate')}" th:errors="*{licensePlate}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Modelo:</label>
+                <input type="text"
+                       th:field="*{model}"
+                       class="form-control"
+                       required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Año:</label>
+                <input type="number"
+                       th:field="*{year}"
+                       class="form-control"
+                       required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tipo:</label>
+                <select th:field="*{type}" class="form-select">
+                    <option th:each="typeOption : ${vehicleTypes}"
+                            th:value="${typeOption}"
+                            th:text="${typeOption}"></option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Estado:</label>
+                <select th:field="*{status}" class="form-select">
+                    <option th:each="statusOption : ${vehicleStatuses}"
+                            th:value="${statusOption}"
+                            th:text="${statusOption}"></option>
+                </select>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a th:href="@{/vehicles}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="~{fragments/fragments :: footer}"></div>
+<div th:replace="~{fragments/fragments :: scripts}"></div>
+</body>
+</html>

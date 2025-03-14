@@ -28,4 +28,52 @@ public class DriverVehicleAssignment extends BaseEntity {
 
     @Column(nullable = false)
     private boolean isActive = true;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public LocalDateTime getAssignmentStart() {
+        return assignmentStart;
+    }
+
+    public void setAssignmentStart(LocalDateTime assignmentStart) {
+        this.assignmentStart = assignmentStart;
+    }
+
+    public LocalDateTime getAssignmentEnd() {
+        return assignmentEnd;
+    }
+
+    public void setAssignmentEnd(LocalDateTime assignmentEnd) {
+        this.assignmentEnd = assignmentEnd;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }
