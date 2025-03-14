@@ -20,10 +20,9 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.CHANGELOG_TOKEN }}
-          ref: main
 
       - name: Fetch all tags
-        run: git fetch origin +refs/tags/*:refs/tags/* --force
+        run: git fetch --tags --force
 
       - name: Get Latest Tag
         id: latest-tag
@@ -32,11 +31,18 @@ jobs:
           echo "Latest tag found: $LATEST_TAG"
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
 
+      - name: Debug - Print cliff.toml content
+        run: cat cliff.toml
+
       - name: Generate CHANGELOG.md
         uses: orhun/git-cliff-action@v2
+        id: git-cliff
         with:
           config: cliff.toml
-          args: --output CHANGELOG.md
+          args: --verbose --output CHANGELOG.md
+
+      - name: Debug - Print Generated CHANGELOG
+        run: cat CHANGELOG.md
 
       - name: Check for changes
         id: check-changes
@@ -56,13 +62,13 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.CHANGELOG_TOKEN }}
-          commit-message: "docs: Actualizar CHANGELOG.md"
-          title: "📚 Actualización de Changelog"
+          commit-message: "docs: Actualizar CHANGELOG.md para versión ${{ env.LATEST_TAG }}"
+          title: "📚 Actualización de Changelog para ${{ env.LATEST_TAG }}"
           body: |
             Actualización automática del archivo CHANGELOG.md
             - Generado con git-cliff
             - Versión: ${{ env.LATEST_TAG }}
-          branch: update-changelog-${{ github.run_id }}
+          branch: update-changelog-${{ env.LATEST_TAG }}
           base: main
           delete-branch: true
           labels: documentation,automated

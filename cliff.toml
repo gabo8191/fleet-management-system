@@ -3,7 +3,6 @@
 header = """
 # 📜 Registro de Cambios - Sistema de Gestión de Flota
 
-**Mantén un historial claro de las actualizaciones del proyecto.**
 """
 # Pie de página del archivo CHANGELOG.md
 footer = """
@@ -34,18 +33,15 @@ tag_pattern = "v[0-9]*"
 "^feat" = { group = "🚀 Nuevas Funcionalidades" }
 "^fix" = { group = "🐛 Correcciones de Errores" }
 "^perf" = { group = "⚡ Mejoras de Rendimiento" }
-
 # Categorías secundarias
 "^refactor" = { group = "🔧 Refactorizaciones" }
 "^docs" = { group = "📚 Documentación" }
 "^test" = { group = "🧪 Pruebas" }
 "^style" = { group = "🎨 Estilos de Código" }
 "^ci" = { group = "🔄 Integración Continua" }
-
 # Separar diferentes tipos de chores
 "^chore\\(deps\\)" = { group = "📦 Actualizaciones de Dependencias" }
 "^chore(?!\\(deps\\))" = { group = "🧹 Mantenimiento" }
-
 # Categoría para el resto de commits
 "" = { group = "Otros Cambios" }
 
