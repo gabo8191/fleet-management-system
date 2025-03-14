@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.translogistics</groupId>
     <artifactId>fleet-managment-system</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <name>FleetManagmentSystem</name>
     <description>FleetManagmentSystem</description>
     <url/>
