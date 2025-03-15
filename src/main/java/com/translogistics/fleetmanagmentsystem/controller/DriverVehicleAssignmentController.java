@@ -3,9 +3,9 @@ package com.translogistics.fleetmanagmentsystem.controller;
 import com.translogistics.fleetmanagmentsystem.exceptions.AssignmentNotFoundException;
 import com.translogistics.fleetmanagmentsystem.exceptions.DriverNotFoundException;
 import com.translogistics.fleetmanagmentsystem.exceptions.VehicleNotFoundException;
-import com.translogistics.fleetmanagmentsystem.model.DriverVehicleAssignment;
 import com.translogistics.fleetmanagmentsystem.service.DriverService;
 import com.translogistics.fleetmanagmentsystem.service.DriverVehicleAssignmentService;
+import com.translogistics.fleetmanagmentsystem.service.UserService;
 import com.translogistics.fleetmanagmentsystem.service.VehicleService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.time.LocalDateTime;
 
 @Controller
@@ -23,22 +22,25 @@ public class DriverVehicleAssignmentController {
     private final DriverVehicleAssignmentService assignmentService;
     private final DriverService driverService;
     private final VehicleService vehicleService;
+    private final UserService userService;
 
     public DriverVehicleAssignmentController(
             DriverVehicleAssignmentService assignmentService,
             DriverService driverService,
-            VehicleService vehicleService) {
+            VehicleService vehicleService, UserService userService) {
         this.assignmentService = assignmentService;
         this.driverService = driverService;
         this.vehicleService = vehicleService;
+        this.userService = userService;
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String listAssignments(Model model) {
-        // You might need to add a method in the service to get all active assignments
-        // model.addAttribute("assignments", assignmentService.findAllActiveAssignments());
-        return "assignments/list-assignments";
+        model.addAttribute("assignments", assignmentService.findAll());
+        model.addAttribute("drivers", driverService.findAllDrivers());
+        model.addAttribute("vehicles", vehicleService.findAllVehicles());
+        return "assignment/list-assignments";
     }
 
     @GetMapping("/new")
@@ -46,7 +48,8 @@ public class DriverVehicleAssignmentController {
     public String showAssignmentForm(Model model) {
         model.addAttribute("vehicles", vehicleService.findAllVehicles());
         model.addAttribute("drivers", driverService.findAllDrivers());
-        return "drivers/assignDriver";
+        model.addAttribute("users", userService.findAllUsers());
+        return "assignment/assignDriver";
     }
 
     @PostMapping("/assign")
@@ -121,6 +124,22 @@ public class DriverVehicleAssignmentController {
             model.addAttribute("driver", driverService.findById(driverId));
             return "assignments/driver-assignments";
         } catch (DriverNotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error/404";
+        }
+    }
+
+    @GetMapping("/edit/{assignmentId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
+    public String showEditAssignmentForm(@PathVariable Long assignmentId, Model model) {
+        try {
+            var assignment = assignmentService.findById(assignmentId);
+
+            model.addAttribute("assignment", assignment);
+            model.addAttribute("drivers", driverService.findAllDrivers());
+
+            return "assignment/edit-assignment";
+        } catch (AssignmentNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "error/404";
         }

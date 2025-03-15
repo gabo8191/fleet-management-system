@@ -21,4 +21,9 @@ public interface DriverVehicleAssignmentRepository extends JpaRepository<DriverV
 
     List<DriverVehicleAssignment> findByDriverAndIsActiveTrue(Driver driver);
     List<DriverVehicleAssignment> findByVehicleAndIsActiveTrue(Vehicle vehicle);
+
+List<DriverVehicleAssignment> findAll();
+
+//find by id
+DriverVehicleAssignment findById(long id);
 }

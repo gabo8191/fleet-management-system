@@ -254,4 +254,18 @@ public class DriverVehicleAssignmentService {
 
         return assignmentRepository.findByVehicleAndIsActiveTrue(vehicle);
     }
+
+    /**
+     * Returns all active assignments in the system.
+     *
+     * @return List of all active driver-vehicle assignments
+     */
+    public List<DriverVehicleAssignment> findAll() {
+        return assignmentRepository.findAll();
+    }
+
+    public DriverVehicleAssignment findById(Long assignmentId) {
+        return assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new AssignmentNotFoundException("Asignación no encontrada"));
+    }
 }
