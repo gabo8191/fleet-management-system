@@ -76,7 +76,7 @@
             <!-- List all drivers -->
             <option th:each="driver : ${drivers}"
                     th:value="${driver.id}"
-                    th:text="${driver.licenseNumber}">
+                    th:text="${driver.licenseNumber} + ' - ' + ${driver.getUser().getFirstName()} + ' ' + ${driver.getUser().getLastName()}">
             </option>
           </select>
         </div>
