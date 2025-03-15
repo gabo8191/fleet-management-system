@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+  <head th:replace="~{fragments/fragments :: head('Registrar Mantenimiento')}">
+  </head>
+  <body>
+    <div th:replace="~{fragments/fragments :: admin-header}"></div>
+
+    <div class="container my-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card auth-card hover-shadow">
+            <div class="card-body">
+              <h2 class="card-title text-center mb-4">
+                Registrar Mantenimiento
+              </h2>
+
+              <form th:action="@{/maintenance/register}" method="post">
+                <div class="mb-3">
+                  <label for="vehicle" class="form-label">Vehículo:</label>
+                  <select
+                    class="form-select"
+                    id="vehicle"
+                    name="vehicleId"
+                    required
+                  >
+                    <option value="">Seleccione un vehículo</option>
+                    <option
+                      th:each="vehicle : ${vehicles}"
+                      th:value="${vehicle.id}"
+                      th:text="${vehicle.plate}"
+                    ></option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label for="maintenanceType" class="form-label"
+                    >Tipo de Mantenimiento:</label
+                  >
+                  <select
+                    class="form-select"
+                    id="maintenanceType"
+                    name="maintenanceType"
+                    required
+                  >
+                    <option value="">Seleccione el tipo</option>
+                    <option
+                      th:each="type : ${T(com.translogistics.fleetmanagmentsystem.enums.MaintenanceType).values()}"
+                      th:value="${type}"
+                      th:text="${type}"
+                    ></option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label for="date" class="form-label">Fecha:</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="date"
+                    name="date"
+                    required
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="cost" class="form-label">Costo:</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="cost"
+                    name="cost"
+                    step="0.01"
+                    required
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="provider" class="form-label">Proveedor:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="provider"
+                    name="provider"
+                    required
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="description" class="form-label"
+                    >Descripción:</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="description"
+                    name="description"
+                    rows="4"
+                    required
+                  ></textarea>
+                </div>
+
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save me-2"></i>Registrar Mantenimiento
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="~{fragments/fragments :: footer}"></div>
+
+    <div th:replace="~{fragments/fragments :: scripts}"></div>
+  </body>
+</html>
