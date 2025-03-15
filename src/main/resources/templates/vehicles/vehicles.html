@@ -7,7 +7,6 @@
 
 <!-- Encabezados según el rol -->
 <div th:replace="~{fragments/fragments :: admin-header}" sec:authorize="hasRole('ADMIN')"></div>
-<div th:replace="~{fragments/fragments :: general-header}" sec:authorize="hasRole('DRIVER')"></div>
 
 <div class="container mt-4 main-content flex-grow-1">
     <div class="card">
@@ -47,7 +46,6 @@
                         <td th:text="${vehicle.year}"></td>
                         <td th:text="${vehicle.type}"></td>
                         <td>
-                            <!-- Ejemplo de “badge” para mostrar estado (si lo tienes en tu enum) -->
                             <span th:if="${vehicle.status.name() == 'AVAILABLE'}" class="badge bg-success">Disponible</span>
                             <span th:if="${vehicle.status.name() == 'MAINTENANCE'}" class="badge bg-warning">Mantenimiento</span>
                             <span th:if="${vehicle.status.name() == 'UNAVAILABLE'}" class="badge bg-danger">No disponible</span>
