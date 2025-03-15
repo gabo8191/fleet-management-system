@@ -30,33 +30,6 @@
                     </div>
                 </div>
 
-                <!-- Planificación de Viajes (Admin) -->
-                <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
-                    <div class="card h-100 border-success hover-shadow">
-                        <div class="card-body text-center">
-                            <i class="bi bi-map fs-1 text-success"></i>
-                            <h5 class="card-title mt-3">Planificación de Viajes</h5>
-                            <p class="card-text">Consulte y planifique los viajes</p>
-                            <a th:href="@{/trips}" class="btn btn-outline-success">Acceder</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mantenimiento (Admin) -->
-                <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
-                    <div class="card h-100 border-warning hover-shadow">
-                        <div class="card-body text-center">
-                            <i class="bi bi-tools fs-1 text-warning"></i>
-                            <h5 class="card-title mt-3">Mantenimiento</h5>
-                            <p class="card-text">Registre mantenimientos y revise el historial de servicios</p>
-                            <a th:href="@{/maintenance}" class="btn btn-outline-warning">Acceder</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Row for Dispatcher and Driver cards -->
-            <div class="row g-4 mt-3">
                 <!-- Asignar Conductor a Vehículo (Dispatcher & Admin) -->
                 <div class="col-md-4" sec:authorize="hasAnyRole('DISPATCHER','ADMIN')">
                     <div class="card h-100 border-info hover-shadow">
@@ -64,12 +37,11 @@
                             <i class="bi bi-person-check fs-1 text-info"></i>
                             <h5 class="card-title mt-3">Asignar Conductor a Vehículo</h5>
                             <p class="card-text">Asigne un conductor a un vehículo para un viaje</p>
-                            <a th:href="@{/assignments/new}" class="btn btn-outline-info">Acceder</a>
+                            <a th:href="@{/assignments}" class="btn btn-outline-info">Acceder</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Consultar Vehículo Asignado (Driver) -->
                 <div class="col-md-6" sec:authorize="hasRole('DRIVER')">
                     <div class="card h-100 border-secondary hover-shadow">
                         <div class="card-body text-center">
@@ -80,6 +52,32 @@
                         </div>
                     </div>
                 </div>
+
+            </div>
+
+            <div class="row g-4 mt-3">
+                <div class="col-md-4" sec:authorize="hasAnyRole('DISPATCHER','ADMIN')">
+                    <div class="card h-100 border-secondary hover-shadow">
+                        <div class="card-body text-center">
+                            <i class="bi bi-person fs-1 text-secondary"></i>
+                            <h5 class="card-title mt-3">Conductores</h5>
+                            <p class="card-text">Consultar el listado de conductores</p>
+                            <a th:href="@{/drivers}" class="btn btn-outline-secondary">Acceder</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
+                    <div class="card h-100 border-danger hover-shadow">
+                        <div class="card-body text-center">
+                            <i class="bi bi-people fs-1 text-danger"></i>
+                            <h5 class="card-title mt-3">Usuarios</h5>
+                            <p class="card-text">Gestione los usuarios del sistema</p>
+                            <a th:href="@{/admin/users}" class="btn btn-outline-danger">Acceder</a>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
         </div>
