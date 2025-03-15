@@ -2,10 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/fragments :: head('Inicio')}"></head>
-
 <body class="d-flex flex-column min-vh-100">
 <div th:replace="~{fragments/fragments :: ${#authorization.expression('hasRole(''ADMIN'')') ? 'admin-header' : 'general-header'}}"></div>
-
 <main class="flex-grow-1">
     <div class="container mt-5">
         <div class="welcome-card bg-white p-5 rounded-4 shadow-lg"
@@ -18,9 +16,11 @@
                 <p class="lead">Sistema Integral de Gestión de Flota Vehicular</p>
             </div>
 
-            <div class="row g-4 mt-3" >
-                <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'DISPATCHER')">
-                    <div class="card h-100 border-primary hover-shadow" >
+            <!-- Row for Admin cards only -->
+            <div class="row g-4 mt-3">
+                <!-- Gestión de Vehículos (Admin) -->
+                <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
+                    <div class="card h-100 border-primary hover-shadow">
                         <div class="card-body text-center">
                             <i class="bi bi-car-front fs-1 text-primary"></i>
                             <h5 class="card-title mt-3">Gestión de Vehículos</h5>
@@ -30,18 +30,20 @@
                     </div>
                 </div>
 
-                <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'DRIVER')">
+                <!-- Planificación de Viajes (Admin) -->
+                <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
                     <div class="card h-100 border-success hover-shadow">
                         <div class="card-body text-center">
                             <i class="bi bi-map fs-1 text-success"></i>
                             <h5 class="card-title mt-3">Planificación de Viajes</h5>
-                            <p class="card-text">Consulte su vehículo asignado y actualice el estado de su viaje</p>
+                            <p class="card-text">Consulte y planifique los viajes</p>
                             <a th:href="@{/trips}" class="btn btn-outline-success">Acceder</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'MECHANIC')">
+                <!-- Mantenimiento (Admin) -->
+                <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
                     <div class="card h-100 border-warning hover-shadow">
                         <div class="card-body text-center">
                             <i class="bi bi-tools fs-1 text-warning"></i>
@@ -52,10 +54,37 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Row for Dispatcher and Driver cards -->
+            <div class="row g-4 mt-3">
+                <!-- Asignar Conductor a Vehículo (Dispatcher & Admin) -->
+                <div class="col-md-4" sec:authorize="hasAnyRole('DISPATCHER','ADMIN')">
+                    <div class="card h-100 border-info hover-shadow">
+                        <div class="card-body text-center">
+                            <i class="bi bi-person-check fs-1 text-info"></i>
+                            <h5 class="card-title mt-3">Asignar Conductor a Vehículo</h5>
+                            <p class="card-text">Asigne un conductor a un vehículo para un viaje</p>
+                            <a th:href="@{/assignments/new}" class="btn btn-outline-info">Acceder</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Consultar Vehículo Asignado (Driver) -->
+                <div class="col-md-6" sec:authorize="hasRole('DRIVER')">
+                    <div class="card h-100 border-secondary hover-shadow">
+                        <div class="card-body text-center">
+                            <i class="bi bi-car-front fs-1 text-secondary"></i>
+                            <h5 class="card-title mt-3">Consultar Vehículo Asignado</h5>
+                            <p class="card-text">Verifique los detalles de su vehículo asignado</p>
+                            <a th:href="@{/vehicles/assigned}" class="btn btn-outline-secondary">Acceder</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </main>
-
 <div th:replace="~{fragments/fragments :: footer}"></div>
 <div th:replace="~{fragments/fragments :: scripts}"></div>
 </body>
