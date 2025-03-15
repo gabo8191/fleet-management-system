@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MainController {
 
-    @GetMapping("/")
+    @GetMapping("/main")
     public String home() {
         return "¡Hola! La aplicación está funcionando";
     }
