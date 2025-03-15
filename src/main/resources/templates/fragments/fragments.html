@@ -239,25 +239,27 @@
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/users}">
+                            <i class="bi bi-people me-1" style="color: #ff6b6b;"></i>Usuarios
+                        </a>
+                    </li>
+                    <li class="nav-item">
+
                         <a class="nav-link" th:href="@{/vehicles}">
                             <i class="bi bi-car-front me-1" style="color: var(--accent-color);"></i>Vehículos
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/trips}">
-                            <i class="bi bi-map me-1" style="color: var(--success-color);"></i>Viajes
+                        <a class="nav-link" th:href="@{/assignments}">
+                            <i class="bi bi-person-check me-1" style="color: var(--success-color);"></i>Asg. Conductor
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/maintenance}">
-                            <i class="bi bi-tools me-1" style="color: var(--primary-color);"></i>Mantenimiento
+                        <a class="nav-link" th:href="@{/drivers}">
+                            <i class="bi bi-person me-1" style="color: #ff9f1c;"></i>Conductores
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/users}">
-                            <i class="bi bi-people me-1" style="color: #ff6b6b;"></i>Usuarios
-                        </a>
-                    </li>
+
                 </ul>
 
                 <div class="d-flex">
