@@ -24,22 +24,16 @@
             <th>Placa</th>
             <th>Modelo</th>
             <th>Año</th>
-            <th>Acciones</th>
           </tr>
           </thead>
           <tbody>
-          <tr th:each="vehicle : ${vehicles}">
+          <!-- Only render vehicles with status ACTIVO using the enum name -->
+          <tr th:each="vehicle : ${vehicles}"
+              th:if="${vehicle.status.name() == 'ACTIVO'}">
             <td th:text="${vehicle.id}"></td>
             <td th:text="${vehicle.licensePlate}"></td>
             <td th:text="${vehicle.model}"></td>
             <td th:text="${vehicle.year}"></td>
-            <td>
-              <!-- This button redirects to a page with the vehicle pre-selected for assignment -->
-              <a th:href="@{'/vehicles/assign-driver-form/' + ${vehicle.id}}"
-                 class="btn btn-sm btn-primary">
-                <i class="bi bi-person-plus me-1"></i> Asignar Conductor
-              </a>
-            </td>
           </tr>
           </tbody>
         </table>
@@ -48,7 +42,6 @@
   </div>
 
   <!-- Assignment Form -->
-  <!-- Alternatively, if you prefer to have the assignment form on the same page, allow the user to choose the vehicle from a select dropdown. -->
   <div class="card">
     <div class="card-header">
       <h4>Asignar Conductor</h4>
@@ -62,12 +55,15 @@
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
         <span th:text="${errorMessage}"></span>
       </div>
-      <form th:action="@{/vehicles/assign-driver}" method="post">
+      <!-- Updated the form action to use the assignments controller endpoint -->
+      <form th:action="@{/assignments/assign}" method="post">
         <div class="mb-3">
           <label for="vehicleId" class="form-label">Vehículo</label>
           <select class="form-control" id="vehicleId" name="vehicleId" required>
             <option value="" disabled selected>Seleccione un vehículo</option>
+            <!-- Only list vehicles that are ACTIVO -->
             <option th:each="vehicle : ${vehicles}"
+                    th:if="${vehicle.status.name() == 'ACTIVO'}"
                     th:value="${vehicle.id}"
                     th:text="${vehicle.licensePlate + ' - ' + vehicle.model}">
             </option>
@@ -77,9 +73,10 @@
           <label for="driverId" class="form-label">Conductor</label>
           <select class="form-control" id="driverId" name="driverId" required>
             <option value="" disabled selected>Seleccione un conductor</option>
+            <!-- List all drivers -->
             <option th:each="driver : ${drivers}"
                     th:value="${driver.id}"
-                    th:text="${driver.name}">
+                    th:text="${driver.licenseNumber}">
             </option>
           </select>
         </div>

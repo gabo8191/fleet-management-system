@@ -58,14 +58,13 @@
             <!-- Row for Dispatcher and Driver cards -->
             <div class="row g-4 mt-3">
                 <!-- Asignar Conductor a Vehículo (Dispatcher & Admin) -->
-                <div class="col-md-6" sec:authorize="hasAnyRole('DISPATCHER','ADMIN')">
+                <div class="col-md-4" sec:authorize="hasAnyRole('DISPATCHER','ADMIN')">
                     <div class="card h-100 border-info hover-shadow">
                         <div class="card-body text-center">
                             <i class="bi bi-person-check fs-1 text-info"></i>
                             <h5 class="card-title mt-3">Asignar Conductor a Vehículo</h5>
                             <p class="card-text">Asigne un conductor a un vehículo para un viaje</p>
-                            <!-- Link updated to use the GET mapping that returns assignDriver.html -->
-                            <a th:href="@{/vehicles/assign-driver-form}" class="btn btn-outline-info">Acceder</a>
+                            <a th:href="@{/assignments/new}" class="btn btn-outline-info">Acceder</a>
                         </div>
                     </div>
                 </div>
