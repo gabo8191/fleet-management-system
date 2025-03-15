@@ -56,7 +56,7 @@
                 <div class="mb-3">
                     <label for="roleId" class="form-label">Rol del Usuario</label>
                     <select class="form-select" id="roleId" name="roleId" required
-                            th:field="*{role.id}"
+                            th:field="*{roleId}"
                             onchange="toggleDriverFields(this)">
                         <option value="">Seleccionar rol</option>
                         <option th:each="role : ${roles}"
