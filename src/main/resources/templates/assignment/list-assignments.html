@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/fragments  :: head('Listado de Asignaciones')}">
+    <title>Listado de Asignaciones</title>
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- Header Admin -->
+<div th:replace="~{fragments/fragments :: ${#authorization.expression('hasRole(''ADMIN'')') ? 'admin-header' : 'general-header'}}"></div>
+
+<div class="container-fluid main-content my-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0"><i class="bi bi-link me-2" style="color: var(--accent-color);"></i>Listado de
+                    Asignaciones</h2>
+                <a th:href="@{/assignments/new}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>Nueva Asignación
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensajes de alerta -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-2"></i>
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de asignaciones -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card hover-shadow">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Vehículo</th>
+                                <th>Conductor</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${assignments == null || assignments.empty}">
+                                <td colspan="7" class="text-center py-4">
+                                    <i class="bi bi-info-circle me-2" style="font-size: 1.5rem;"></i>
+                                    No hay asignaciones disponibles.
+                                </td>
+                            </tr>
+                            <tr th:each="assignment : ${assignments}"
+                                th:if="${assignments != null && !assignments.empty}">
+                                <td th:text="${assignment.id}"></td>
+                                <td>
+                                    <a th:href="@{/vehicles/details/{id}(id=${assignment.vehicle.id})}"
+                                       th:text="${assignment.vehicle.licensePlate + ' - ' + ' ' + assignment.vehicle.model + ' ' + assignment.vehicle.year + ' ' + assignment.vehicle.type}"
+                                       class="text-decoration-none"></a>
+                                </td>
+                                <td>
+                                    <a th:href="@{/drivers/details/{id}(id=${assignment.driver.id})}"
+                                       th:text="${assignment.driver.getUser().getFirstName() + ' ' + assignment.driver.getUser().getLastName()}"
+                                       class="text-decoration-none"></a>
+                                </td>
+                                <td th:text="${#temporals.format(assignment.assignmentStart, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td th:text="${assignment.assignmentEnd != null ? #temporals.format(assignment.assignmentEnd, 'dd/MM/yyyy HH:mm') : '-'}"></td>
+                                <td>
+                                    <span th:if="${assignment.assignmentEnd == null}"
+                                          class="badge bg-success">Activo</span>
+                                    <span th:unless="${assignment.assignmentEnd == null}" class="badge bg-secondary">Finalizado</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a th:if="${assignment.assignmentEnd == null}"
+                                           th:href="@{'/assignments/end/' + ${assignment.id}}"
+                                           class="btn btn-warning btn-sm"
+                                           onclick="return confirm('¿Está seguro de finalizar esta asignación?');">
+                                            <i class="bi bi-flag-fill me-1"></i>Finalizar
+                                        </a>
+                                        <a th:if="${assignment.assignmentEnd == null}"
+                                           th:href="@{'/assignments/edit/' + ${assignment.id}}"
+                                           class="btn btn-primary btn-sm">
+                                            <i class="bi bi-arrow-repeat me-1"></i>Reasignar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="~{fragments/fragments :: footer}"></div>
+
+<!-- Scripts -->
+<div th:replace="~{fragments/fragments :: scripts}"></div>
+
+
+</body>
+</html>
